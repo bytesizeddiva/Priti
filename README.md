@@ -96,14 +96,16 @@ const X_URL = '…';
 
 ### Using your own photo
 
-The default portrait is a temporary stock image. Drop yours in `public/` and
-point `<Portrait />` at it in `src/App.tsx`:
+The portrait is served from `public/pfp.jpg`. To swap it, replace that file, or
+point `<Portrait />` at a different one in `src/App.tsx`:
 
 ```tsx
 <Portrait customImage="/me.jpg" />
 ```
 
-If the image fails to load, the component falls back to the `PJ` monogram.
+The frame is a square circle, so a portrait-orientation crop reads best — add
+`object-top` if a face is being cut off at the top. If the image fails to load,
+the component falls back to a `PJ` monogram.
 
 ### Social preview image
 

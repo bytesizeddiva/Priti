@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 interface PortraitProps {
   /**
-   * Optional override. To use your own photo, drop the file in `public/` and
-   * pass its path here (e.g. customImage="/me.jpg").
+   * Optional override. Served from `public/`, so pass the path as it appears in
+   * the URL (e.g. customImage="/me.jpg").
    */
   customImage?: string | null;
 }
 
-const DEFAULT_PORTRAIT =
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&h=400&q=85';
+/** Served locally from public/ — no third-party request, no privacy leak. */
+const DEFAULT_PORTRAIT = '/pfp.jpg';
 
 const initialsOf = (name: string): string =>
   name
@@ -30,23 +30,21 @@ export const Portrait: React.FC<PortraitProps> = ({ customImage }) => {
   }, [imageSrc]);
 
   return (
-    <div className="relative flex items-center justify-center">
-      {/* Editorial Monochrome Portrait */}
-      <div className="relative w-[78px] h-[78px] sm:w-[86px] sm:h-[86px] rounded-full overflow-hidden flex items-center justify-center shrink-0 border border-black/[0.08] shadow-[0_2px_10px_rgba(0,0,0,0.06)] bg-neutral-100">
-        {!imageError ? (
-          <img
-            src={imageSrc}
-            alt="Priti Jadhav"
-            className="w-full h-full object-cover grayscale contrast-[1.1] brightness-[0.96] transition-transform duration-300 hover:scale-105"
-            referrerPolicy="no-referrer"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-400 flex items-center justify-center text-neutral-700 font-semibold text-xl">
-            {initialsOf('Priti Jadhav')}
-          </div>
-        )}
-      </div>
+    <div className="h-[78px] w-[78px] sm:h-[86px] sm:w-[86px] shrink-0 rounded-full overflow-hidden bg-neutral-100">
+      {!imageError ? (
+        <img
+          src={imageSrc}
+          alt="Priti Jadhav"
+          // object-top keeps the face in frame: pfp.jpg is 736x882 (portrait),
+          // so a centre crop would cut the forehead and chin.
+          className="h-full w-full object-cover object-top"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-400 flex items-center justify-center text-neutral-700 font-semibold text-xl">
+          {initialsOf('Priti Jadhav')}
+        </div>
+      )}
     </div>
   );
 };
